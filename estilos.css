@@ -1,0 +1,37 @@
+.imagen{
+    
+    max-width: 800px;
+    display:block;
+    margin:auto;
+}
+.marco_imagen{
+    text-align: center;
+    
+}
+p{
+    font-size: 1.8vh;
+    text-align: justify;
+}
+#texto{
+    max-width: 1200px;
+    margin:auto;
+}
+#pagina{
+    max-width: 1200px;
+    margin:auto;
+}
+#boton{
+    max-width: 1200px;
+    margin:auto;
+
+}
+button{
+    padding: 10px 20px 10px 20px;
+    font-size: 20px;
+}
+.margenes{
+    margin-bottom: 100px; 
+}
+.titulo{
+    margin-top: 90px; 
+}

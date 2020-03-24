@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-16">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test 1</title>
+    <link rel="stylesheet" type="text/css" href="estilos.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <div id="lista_texto" class="container margenes">
+    </div>    
+
+    <script src="lista_vn.js"></script>
+    <script>
+        // console.log(lista_novelas)
+        var lista_texto = document.getElementById("lista_texto")   
+        var lista_escenas =[]
+        var pagina=1
+        var ruta1 = ''
+        var escenas1 = ''
+        var nombre1 = ''
+        var ruta_name = ''
+        function mostrar_text(){
+            lista_texto.innerHTML =""
+            for(var linea in lista_novelas){
+                // console.log(trackname[linea]);
+                trackname = lista_novelas[linea];
+                // console.log(trackname)
+                lista_texto.innerHTML += `<div class='text-center'><button type="button" class="btn btn-outline-success mx-2 my-2 btn-lg" onclick="ver_escenas('`+`${trackname}`+`')">`+`${trackname}`+`</button></div>`                 
+            }
+        }
+        mostrar_text()
+        function ver_escenas(nombre){
+            pagina = 1
+            nombre1 = nombre
+            lista_texto.innerHTML =""
+            lista_texto.innerHTML += `<div class='text-center'><button type="button" class="btn btn-primary mx-2 my-2 btn-lg" onclick="mostrar_text()">Back</button></div>`
+            ruta = 'textos/'+nombre+'/escenarios.txt'
+            fetch(ruta)
+            .then(response => response.arrayBuffer())
+            .then(buffer => {
+                let decoder = new TextDecoder("utf-16");
+                let text = decoder.decode(buffer);
+                                
+                var keyword=text.toString();
+                var lista_escenas = keyword.split("|*|"); 
+                for(var linea in lista_escenas){
+                    // console.log(trackname[linea]);
+                    trackname = lista_escenas[linea];
+                    // console.log(trackname)
+                    if(trackname != ''){
+                        lista_texto.innerHTML += `<div class='text-center'><button type="button" class="btn btn-outline-success mx-1 my-1 btn-sm" onclick="ver_texto('textos/`+`${nombre}`+`/`+`${trackname}`+`.txt','`+`${nombre}`+`')">`+`${trackname}`+`</button></div>`                 
+                    }
+                    
+                }
+            })
+        }
+        function ver_texto(ruta, escenas){
+            ruta1 = ruta
+            escenas1 = escenas
+            ruta_name = ruta.split('/')[2].replace('.txt','')
+            lista_texto.innerHTML =""
+            lista_texto.innerHTML += `<div class="fixed-top btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups" role="group" aria-label="Basic example"><button type="button" class="btn btn-primary mx-2 my-2 btn-lg" onclick="ver_escenas('`+`${escenas}`+`')">`+`${escenas}`+`</button> <button type="button" class="btn btn-primary mx-2 my-2 btn-lg" onclick="update_pagina('`+`${pagina+1}`+`')">Siguiente</button> <button type="button" class="btn btn-primary mx-2 my-2 btn-lg" onclick="update_pagina('`+`${pagina-1}`+`')">Atras</button></div>`
+            // lista_texto.innerHTML += ``
+            // lista_texto.innerHTML += ``
+            fetch(ruta)
+            .then(response => response.arrayBuffer())
+            .then(buffer => {
+                let decoder = new TextDecoder("utf-16");
+                let text = decoder.decode(buffer);
+                                
+                var keyword=text.toString();
+                lista_escenas = keyword.split("\n"); 
+                mostrar_next(pagina)
+            })
+        }
+        function mostrar_next(pagina){
+            lista_texto.innerHTML += `<h1  class="text-center titulo">`+`${ruta_name}`+` : `+`${pagina}`+`</h1>`     
+            for(var linea in lista_escenas){
+                // console.log(trackname[linea]);
+                trackname = lista_escenas[linea];
+                // console.log(trackname)
+                trackname2 = trackname.split('\t')
+                parrafo = trackname2[3];
+                pagina_select = trackname2[1];
+                
+                if(parrafo.includes(':') == true && parrafo.includes('AR') == true && pagina_select == String(pagina)){      
+                    link_salto = parrafo.replace('SELECCIONAR 1: ','').replace('SELECCIONAR 2: ','').replace('SELECCIONAR 3: ','').replace('SELECCIONAR 4: ','').replace('SALTAR: ','')
+                    ruta1 = 'textos/'+nombre1+'/'+link_salto+'.txt'                   
+                    lista_texto.innerHTML += `<button type="button" class="btn btn-link mx-2 my-2" onclick="saltar_pagina()">`+`${link_salto}`+`</button>`                 
+                } else if(parrafo != '' && parrafo != null && pagina_select == String(pagina)){                            
+                    lista_texto.innerHTML += `<p>`+`${parrafo}`+`</p>`                 
+                }                    
+            }
+        }
+        function update_pagina(variable){
+            pagina = Number(variable)
+            ver_texto(ruta1, escenas1)
+        }
+        function saltar_pagina(variable){
+            pagina = 1
+            ver_texto(ruta1, escenas1)
+        }
+    </script>
+
+</body>
+</html>
